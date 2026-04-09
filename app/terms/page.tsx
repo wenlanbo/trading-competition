@@ -23,28 +23,31 @@ export default function TermsPage() {
         Terms &amp; Conditions
       </h1>
       <p className="mb-8 text-sm text-text-secondary">
-        42 Trading Competition — Phase 1
+        42 Trading Competition
       </p>
 
       <ol className="list-none space-y-5">
         <TermsItem number={1}>
-          The phase 1 of 42 Trading Contest (the &ldquo;Competition&rdquo;) will take place
+          42 Trading Contest (the &ldquo;Competition&rdquo;) will take place
           during the period of{' '}
-          <strong className="text-white">April [x], 00:00 UTC → April [x], 12:00 UTC</strong>{' '}
+          <strong className="text-white">April 10, 00:00 UTC → April 20, 12:00 UTC</strong>{' '}
           (the &ldquo;Competition Period&rdquo;).
         </TermsItem>
 
         <TermsItem number={2}>
           Participants may trade across all eligible markets on 42 during the
-          Competition Period. Eligible markets are defined as those launched after
-          the start of the Competition Period and are the only markets that will be
-          considered for participation and scoring.
+          Competition Period.
+          <SubItem>
+            Eligible markets are defined as those markets launched after the
+            start of the Competition Period and are the only ones that will be
+            considered for participation and scoring.
+          </SubItem>
         </TermsItem>
 
         <TermsItem number={3}>
           A minimum of{' '}
-          <strong className="text-white">$25 in trading volume</strong> is required
-          to qualify for participation.
+          <strong className="text-white">$25 in trading volume</strong> is
+          required to qualify for the competition.
         </TermsItem>
 
         <TermsItem number={4}>
@@ -54,30 +57,43 @@ export default function TermsPage() {
           >
             Rankings
           </a>{' '}
-          shall be determined based on realized PnL, with trading volume used as a
-          tiebreaker.
+          will be determined based on realized PnL, with trading volume used as
+          a tiebreaker.
+          <SubItem>
+            PnL from markets that have not ended, been resolved or finalized by
+            the conclusion of the Competition Period shall not be counted.
+          </SubItem>
         </TermsItem>
 
         <TermsItem number={5}>
-          PnL from markets that have not ended, been resolved or finalized by the
-          conclusion of the Competition Period shall not be counted.
-        </TermsItem>
-
-        <TermsItem number={6}>
           Any abusive or manipulative activity, including but not limited to
           botting or cheating, shall result in immediate disqualification.
         </TermsItem>
 
-        <TermsItem number={7}>
+        <TermsItem number={6}>
           Final results shall be confirmed within{' '}
-          <strong className="text-white">three (3) business days</strong> following
-          the end of the Competition Period.
+          <strong className="text-white">three (3) business days</strong>{' '}
+          following the end of the Competition Period.
+        </TermsItem>
+
+        <TermsItem number={7}>
+          The top{' '}
+          <strong className="text-white">five (5) traders</strong> will share a
+          total prize pool of{' '}
+          <strong className="text-white">$1,000</strong>, allocated as follows:
+          <div className="mt-3 grid grid-cols-5 gap-2">
+            <PrizeCard place="1st" amount="$400" />
+            <PrizeCard place="2nd" amount="$250" />
+            <PrizeCard place="3rd" amount="$175" />
+            <PrizeCard place="4th" amount="$100" />
+            <PrizeCard place="5th" amount="$75" />
+          </div>
         </TermsItem>
 
         <TermsItem number={8}>
-          The top{' '}
-          <strong className="text-white">five (5) traders</strong> shall advance to
-          the final round.
+          Rewards will be distributed within{' '}
+          <strong className="text-white">two (2) business days</strong> after
+          the winners are officially announced.
         </TermsItem>
 
         <TermsItem number={9}>
@@ -101,7 +117,28 @@ function TermsItem({
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand2/30 bg-brand2/10 text-xs font-semibold text-brand3">
         {number}
       </span>
-      <p className="pt-0.5 text-sm leading-relaxed text-white/70">{children}</p>
+      <div className="pt-0.5 text-sm leading-relaxed text-white/70">
+        {children}
+      </div>
     </li>
+  )
+}
+
+function SubItem({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mt-2 border-l-2 border-brand2/20 pl-3 text-xs leading-relaxed text-white/50">
+      {children}
+    </p>
+  )
+}
+
+function PrizeCard({ place, amount }: { place: string; amount: string }) {
+  return (
+    <div className="rounded-lg border border-brand2/20 bg-brand2/5 py-2 text-center">
+      <p className="text-[10px] font-medium uppercase tracking-wider text-white/40">
+        {place}
+      </p>
+      <p className="text-sm font-bold text-white">{amount}</p>
+    </div>
   )
 }

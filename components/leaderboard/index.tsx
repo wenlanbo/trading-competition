@@ -15,11 +15,11 @@ export const Leaderboard = () => {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-green4" />
           </span>
           <span className="text-xs font-semibold tracking-wide text-white/90 md:text-sm">
-            Apr 7, 2026, 00:00 UTC — Apr 17, 2026, 12:00 UTC
+            Apr 10, 2026, 00:00 UTC — Apr 20, 2026, 12:00 UTC
           </span>
         </div>
         <p className="mx-auto mt-3 max-w-lg text-center text-xs leading-relaxed text-text-secondary md:text-sm">
-          Only trades on markets launched after Apr 7, 00:00 UTC count toward the
+          Only trades on markets launched after Apr 10, 00:00 UTC count toward the
           leaderboard. Unrealized PnL is excluded, including from markets that
           have ended but are not yet resolved at the time the competition closes.
         </p>
