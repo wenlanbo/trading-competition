@@ -31,7 +31,7 @@ export default function RootLayout({
                 href="/terms"
                 className="inline-flex items-center gap-1.5 rounded-full border border-brand2/20 bg-brand2/5 px-4 py-1.5 text-xs font-medium text-brand3 transition-all hover:border-brand2/40 hover:bg-brand2/10 hover:text-brand"
               >
-                Competition T&amp;C
+                Competition T&amp;Cs
               </a>
               <a
                 href="https://docs.42.space/legal/terms-of-use"

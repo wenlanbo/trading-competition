@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions — Trading Competition',
+  title: 'Terms and Conditions — Trading Competition',
   description: '42 Trading Competition Terms and Conditions',
 }
 
@@ -20,7 +20,7 @@ export default function TermsPage() {
       </Link>
 
       <h1 className="mb-2 bg-gradient-to-r from-[#d745ff] via-[#de8bf3] to-[#d745ff] bg-clip-text text-2xl font-bold tracking-tight text-transparent md:text-3xl">
-        Terms &amp; Conditions
+        Terms and Conditions
       </h1>
       <p className="mb-8 text-sm text-text-secondary">
         42 Trading Competition
