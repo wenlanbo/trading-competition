@@ -34,10 +34,13 @@ function buildWhere(): Record<string, unknown> | undefined {
     })
   }
 
-  // Market created after filter
-  if (LEADERBOARD_FILTERS.market.createdAfter) {
+  // Market start-time filter (unix seconds, inclusive)
+  if (LEADERBOARD_FILTERS.market.startedAfter) {
+    const startTs = Math.floor(
+      Date.parse(LEADERBOARD_FILTERS.market.startedAfter) / 1000
+    )
     conditions.push({
-      question: { created_at: { _gte: LEADERBOARD_FILTERS.market.createdAfter } },
+      market: { start_timestamp: { _gte: startTs } },
     })
   }
 
@@ -89,7 +92,7 @@ export function useLeaderboardBestSingleTrades(
     sortDir,
     LEADERBOARD_FILTERS.volume.minVolume,
     LEADERBOARD_FILTERS.market.contractAddresses,
-    LEADERBOARD_FILTERS.market.createdAfter,
+    LEADERBOARD_FILTERS.market.startedAfter,
   ] as const
 
   const {

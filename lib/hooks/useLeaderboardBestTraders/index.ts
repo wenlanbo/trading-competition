@@ -24,7 +24,7 @@ const DEFAULT_SORT_FIELD: BestTraderSortField = 'realized_pnl_hmr'
 
 const hasMarketFilters =
   LEADERBOARD_FILTERS.market.contractAddresses.length > 0 ||
-  LEADERBOARD_FILTERS.market.createdAfter !== null
+  LEADERBOARD_FILTERS.market.startedAfter !== null
 
 // ---------------------------------------------------------------------------
 // Where-clause builders
@@ -56,10 +56,13 @@ function buildTradesWhere(): Record<string, unknown> | undefined {
     })
   }
 
-  if (LEADERBOARD_FILTERS.market.createdAfter) {
+  if (LEADERBOARD_FILTERS.market.startedAfter) {
+    const startTs = Math.floor(
+      Date.parse(LEADERBOARD_FILTERS.market.startedAfter) / 1000
+    )
     conditions.push({
-      question: {
-        created_at: { _gte: LEADERBOARD_FILTERS.market.createdAfter },
+      market: {
+        start_timestamp: { _gte: startTs },
       },
     })
   }
@@ -272,7 +275,7 @@ export function useLeaderboardBestTraders(
     queryKey: [
       'leaderboardBestTradersAggregated',
       LEADERBOARD_FILTERS.market.contractAddresses,
-      LEADERBOARD_FILTERS.market.createdAfter,
+      LEADERBOARD_FILTERS.market.startedAfter,
     ],
     queryFn: async () => {
       const allTrades: any[] = []
