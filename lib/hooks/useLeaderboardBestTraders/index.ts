@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 
-import { EVENT_TYPES, LEADERBOARD_FILTERS } from '@/lib/config/filters'
+import { LEADERBOARD_FILTERS } from '@/lib/config/filters'
 import { graphqlClient } from '@/lib/graphql/client'
 
 import {
@@ -25,7 +25,6 @@ const DEFAULT_SORT_FIELD: BestTraderSortField = 'realized_pnl_hmr'
 const hasMarketFilters =
   LEADERBOARD_FILTERS.market.contractAddresses.length > 0 ||
   LEADERBOARD_FILTERS.market.startedAfter !== null ||
-  LEADERBOARD_FILTERS.market.endedBefore !== null ||
   LEADERBOARD_FILTERS.trade.occurredBefore !== null
 
 // ---------------------------------------------------------------------------
@@ -69,27 +68,13 @@ function buildTradesWhere(): Record<string, unknown> | undefined {
     })
   }
 
-  // Competition-end cutoff: claim events are gated by market.end_timestamp;
-  // all other events are gated by the trade's own block_timestamp.
-  const tradeCutoff = LEADERBOARD_FILTERS.trade.occurredBefore
-  const marketEndCutoff = LEADERBOARD_FILTERS.market.endedBefore
-  if (tradeCutoff || marketEndCutoff) {
-    const branches: Record<string, unknown>[] = []
-    if (marketEndCutoff) {
-      const endTs = Math.floor(Date.parse(marketEndCutoff) / 1000)
-      branches.push({
-        event_type: { _eq: EVENT_TYPES.claim },
-        market: { end_timestamp: { _lt: endTs } },
-      })
-    }
-    if (tradeCutoff) {
-      const txTs = Math.floor(Date.parse(tradeCutoff) / 1000)
-      branches.push({
-        event_type: { _neq: EVENT_TYPES.claim },
-        block_timestamp: { _lt: txTs },
-      })
-    }
-    conditions.push({ _or: branches })
+  // Competition-end cutoff on event's block_timestamp. For finalise events,
+  // this equals the market finalization time; for redeem events, the txn time.
+  if (LEADERBOARD_FILTERS.trade.occurredBefore) {
+    const cutoffTs = Math.floor(
+      Date.parse(LEADERBOARD_FILTERS.trade.occurredBefore) / 1000
+    )
+    conditions.push({ block_timestamp: { _lt: cutoffTs } })
   }
 
   if (conditions.length === 0) return undefined
@@ -301,7 +286,6 @@ export function useLeaderboardBestTraders(
       'leaderboardBestTradersAggregated',
       LEADERBOARD_FILTERS.market.contractAddresses,
       LEADERBOARD_FILTERS.market.startedAfter,
-      LEADERBOARD_FILTERS.market.endedBefore,
       LEADERBOARD_FILTERS.trade.occurredBefore,
     ],
     queryFn: async () => {
