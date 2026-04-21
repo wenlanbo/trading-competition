@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 
-import { LEADERBOARD_FILTERS } from '@/lib/config/filters'
+import { EVENT_TYPES, LEADERBOARD_FILTERS } from '@/lib/config/filters'
 import { graphqlClient } from '@/lib/graphql/client'
 
 import { GET_BEST_SINGLE_TRADES } from './gql'
@@ -42,6 +42,29 @@ function buildWhere(): Record<string, unknown> | undefined {
     conditions.push({
       market: { start_timestamp: { _gte: startTs } },
     })
+  }
+
+  // Competition-end cutoff: claim events are gated by market.end_timestamp;
+  // all other events are gated by the trade's own block_timestamp.
+  const tradeCutoff = LEADERBOARD_FILTERS.trade.occurredBefore
+  const marketEndCutoff = LEADERBOARD_FILTERS.market.endedBefore
+  if (tradeCutoff || marketEndCutoff) {
+    const branches: Record<string, unknown>[] = []
+    if (marketEndCutoff) {
+      const endTs = Math.floor(Date.parse(marketEndCutoff) / 1000)
+      branches.push({
+        event_type: { _eq: EVENT_TYPES.claim },
+        market: { end_timestamp: { _lt: endTs } },
+      })
+    }
+    if (tradeCutoff) {
+      const txTs = Math.floor(Date.parse(tradeCutoff) / 1000)
+      branches.push({
+        event_type: { _neq: EVENT_TYPES.claim },
+        block_timestamp: { _lt: txTs },
+      })
+    }
+    conditions.push({ _or: branches })
   }
 
   if (conditions.length === 0) return undefined
@@ -93,6 +116,8 @@ export function useLeaderboardBestSingleTrades(
     LEADERBOARD_FILTERS.volume.minVolume,
     LEADERBOARD_FILTERS.market.contractAddresses,
     LEADERBOARD_FILTERS.market.startedAfter,
+    LEADERBOARD_FILTERS.market.endedBefore,
+    LEADERBOARD_FILTERS.trade.occurredBefore,
   ] as const
 
   const {
